@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no" />
+		<title>3D信息展示</title>
+		<link rel="stylesheet" href="https://js.arcgis.com/4.11/esri/themes/light/main.css" />
+	<style>
+		html,
+		body,
+		#viewDiv {
+			padding: 0;
+			margin: 0;
+			height: 100%;
+			width: 100%;
+			font-family: Helvetica, Arial, sans-serif;
+		}
+		
+		#screenshotDiv {
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			text-align: center;
+			background-color: rgba(255, 255, 255, 0.8);
+		}
+		
+		.hide {
+			display: none;
+		}
+		
+		img {
+			border: 10px solid white;
+			box-shadow: 2px 2px 5px 0 rgba(0, 0, 0, 0.5);
+		}
+		
+		#screenshotDiv>* {
+			margin: 0.5em;
+		}
+		
+		.screenshotCursor {
+			cursor: crosshair;
+		}
+		
+		.action-button {
+			padding: 0.6em;
+			border: 1px solid #0079c1;
+			text-align: center;
+			background-color: white;
+			cursor: pointer;
+		}
+		
+		.action-button:hover,
+		.action-button:focus {
+			background: #0079c1;
+			color: white;
+		}
+		
+		#maskDiv {
+			position: absolute;
+			background: rgba(255, 51, 0, 0.1);
+			border: 2px dashed rgb(255, 51, 0);
+		}
+		
+		#bt1{
+			position: absolute;
+			top: 200px;
+		}
+		#bt2{
+			position: absolute;
+			top: 270px;
+		}
+		#bt3{
+			position: absolute;
+			top: 340px;
+		}
+		button {
+		left: 20px;
+		-webkit-transition-duration: 0.4s; /* Safari */
+		transition-duration: 0.4s;
+		border-radius: 12px;
+		height: 40px;
+		background-color: gold;
+		}
+		
+		button:hover {
+		background-color: royalblue; /* Green */
+		color: white;
+		}
+	</style>
+		<script src="https://js.arcgis.com/4.11/"></script>
+		<script>
+			require([
+				"esri/Map",
+				"esri/layers/CSVLayer",
+				"esri/views/SceneView",
+				"esri/widgets/BasemapGallery"
+			], function(Map, CSVLayer, SceneView, BasemapGallery) {
+				var template = {
+					title: "发病情况说明",
+					content: "地点:{Name}   发病数:{fabing}   死亡数:{siwang}."
+				};
+
+				var csvLayer = new CSVLayer({
+					url: "https://ganwanwan.github.io/WebGIS3/dead.csv",
+					copyright: "USGS Earthquakes",
+					popupTemplate: template,
+					elevationInfo: {
+						// drapes icons on the surface of the globe
+						mode: "on-the-ground"
+					}
+				});
+
+				csvLayer.renderer = {
+					type: "simple", // autocasts as new SimpleRenderer()
+					symbol: {
+						type: "point-3d", // autocasts as new PointSymbol3D()
+						symbolLayers: [{
+							type: "icon", // autocasts as new IconSymbol3DLayer()
+							material: {
+								color: [84, 255 ,159, 0.75]
+							},
+							outline: {
+								width: 0.5,
+								color: "white"
+							},
+							size: "12px"
+						}]
+					}
+				};
+
+				var map = new Map({
+					basemap: "gray",
+					layers: [csvLayer]
+				});
+
+				var view = new SceneView({
+					container: "viewDiv",
+					map: map,
+					center: [114, 31],
+					zoom: 4
+				});
+
+				var basemapGallery = new BasemapGallery({
+					view: view
+				});
+
+				// Add the widget to the top-right corner of the view
+				view.ui.add(basemapGallery, {
+					position: "top-right"
+				});
+				// the button that triggers area selection mode
+			
+			
+			});
+		</script>
+		
+	</head>
+
+	<body>
+		<div id="viewDiv"></div>
+			<a href="MainPage.html" target="_blank"><button id="bt1">猪瘟基本情况介绍</button></a>
+			<a href="ThermalMap.html" target="_blank"><button id="bt2">影响范围热力图</button></a>
+			<a href="Country.html" target="_blank"><button id="bt3">全国分布状况</button></a>
+	</body>
+</html>

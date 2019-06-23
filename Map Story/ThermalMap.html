@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>猪瘟影响范围热力图</title>
+		<script src="https://js.arcgis.com/4.11/"></script>
+		<link rel="stylesheet" href="https://js.arcgis.com/4.11/esri/themes/light/main.css" />
+
+		<style>
+			html,
+			body,
+			#viewDiv {
+				padding: 0;
+				margin: 0;
+				height: 100%;
+				width: 100%;
+			}
+			
+			#bt1{
+				position: absolute;
+				top: 100px;
+			}
+			#bt2{
+				position: absolute;
+				top: 170px;
+			}
+			#bt3{
+				position: absolute;
+				top: 240px;
+			}
+			button {
+			left: 20px;
+			-webkit-transition-duration: 0.4s; /* Safari */
+			transition-duration: 0.4s;
+			border-radius: 12px;
+			height: 40px;
+			background-color: gold;
+			}
+			
+			button:hover {
+			background-color: royalblue; /* Green */
+			color: white;
+			}
+		</style>
+
+		
+
+		<script>
+			require([
+				"esri/Map",
+				"esri/views/MapView",
+				"esri/layers/CSVLayer",
+				"esri/widgets/Legend"
+			], function(Map,MapView,CSVLayer, Legend) {
+				const url =
+					"https://ganwanwan.github.io/WebGIS3/dead.csv";
+
+				const template = {
+					title: "详细情况",
+					content: "地点:{Name} hit {fabing} on {siwang}."
+				};
+
+
+				const renderer = {
+					type: "heatmap",
+					field: "siwang",
+					stops: [
+					{ value: 0, opacity: 0.1, label: "0" },
+					{ value: 55, opacity: 0.65, label: "55" }
+					]
+				};
+
+				const layer = new CSVLayer({
+					url: url,
+					title: "2018-2019年中国非洲猪瘟分布情况",
+					copyright: "中国省份",
+					popupTemplate: template,
+					renderer: renderer
+				});
+
+				const map = new Map({
+					basemap: "gray",
+					layers: [layer]
+				});
+
+				const view = new MapView({
+					container: "viewDiv",
+					center: [113, 29],
+					zoom: 4,
+					map: map
+				});
+
+				view.ui.add(
+					new Legend({
+						view: view
+					}),
+					"bottom-right"
+				);
+			});
+		</script>
+	</head>
+
+	<body>
+		<div id="viewDiv"></div>
+		<a href="MainPage.html" target="_blank"><button id="bt1">猪瘟基本情况介绍</button></a>
+		<a href="Country.html" target="_blank"><button id="bt2">全国分布状况</button></a>
+		<a href="3DMap.html" target="_blank"><button id="bt3">3D显示</button></a>
+	</body>
+
+</html>
